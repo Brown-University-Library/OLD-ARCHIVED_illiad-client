@@ -1,0 +1,257 @@
+<html>
+<head>
+<title>ILLiad - Photocopy Request</title>
+<link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" type="text/css" href="css/ie6_or_less.css" />
+<![endif]-->
+</head>
+<body id="type-b">
+<div id="wrap">
+  <div id="header">
+	<div id="title-name">ILLiad</div>
+	<div id="status"></div>
+	<div id="search">
+		<form action="illiad.dll" name="Search" method="post">
+			<input type="hidden" name="IlliadForm" value="Search" />
+			<input id="SessionID" name="SessionID" type="hidden" value="P110903490N" />
+			<label for="SearchCriteria">
+				<input id="SearchCriteria" name="SearchCriteria" type="text" class="f-criteria" />				
+			</label>
+			<input type="submit" name="SubmitButton" value="Search" class="f-submit" />
+			<div id="searchType">
+				<input name="SearchType" type="radio" id="SearchTypeActive" value="Active" checked class="f-searchType" /><label for="SearchTypeActive">Active</label>
+				<input name="SearchType" type="radio" id="SearchTypeAll" value="All" class="f-searchType" /><label for="SearchTypeAll">All</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+
+  <div id="content-wrap">
+  	<div id="utility">
+	<ul id="nav">
+		<li class="active"><a href="illiad.dll?SessionID=P110903490N&Action=99">Logoff tlawless</a></li>
+		<li class="active"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=10">Main Menu</a></li>
+		<li class="active"><a href="#">New Request</a>
+			<ul>
+				<li class="first"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=22">Photocopy</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=21">Book</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=23">Book Chapter</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=24">Conference Paper</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=25">Patent</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=26">Report</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=27">Thesis</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=28">Standards Document</a></li>
+				<li class="last"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=29">Other (Free Text)</a></li>
+			</ul>
+		</li>
+		<li class="active"><a href="#">View</a>
+			<ul>
+				<li class="first"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=62">Outstanding Requests</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=64">Electronically Received Articles</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=66">Checked Out Items</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=70">Cancelled Requests</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=68">History Requests</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=60">All Requests</a></li>
+				<li class="last"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=73">Notifications</a></li>
+			</ul>
+		</li>
+		<li class="active"><a href="#">Tools</a>
+			<ul>
+				<li class="first"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=81">Change User Information</a></li>
+				<li><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=82">Change Accounts</a></li>
+				<li class="last"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=83">Change Password</a></li>
+			</ul>
+		</li>
+		<li class="active"><a href="illiad.dll?SessionID=P110903490N&Action=10&Form=1">About ILLiad</a></li>
+	</ul>
+</div>
+
+
+    <div id="content">
+		<form action="illiad.dll" method="post" name="ArticleRequest" class="f-wrap-request">
+			<input type="hidden" name="ILLiadForm" value="ArticleRequest">
+			<input type="hidden" name="Username" value="tlawless">
+			<input type="hidden" name="SessionID" value="P110903490N">
+				<div class="req"><b>*</b> Indicates required field</div>
+				<fieldset>			
+					<h3>Photocopy Request</h3>
+					<span class="statusNormal">Enter information below and press the Submit Information button to send.</span>
+
+					<h2>Describe the item you want</h2>			
+					<label for="PhotoJournalTitle">
+						<span class="field">
+							<span class="req">*</span>
+							<span class="valid"><b>Title (Journal, Conference Proceedings, Anthology)</b></span><br />
+							<span class="note">Please do not abbreviate unless your citation is abbreviated</span>
+						</span>
+						<textarea id="PhotoJournalTitle" name="PhotoJournalTitle" rows="2" cols="40" class="f-name" tabindex="1">Current pharmaceutical design</textarea><br />
+					</label>		
+						
+					<label for="PhotoJournalVolume">
+						<span class="field">
+							<span class="valid"><b>Volume</b></span>
+						</span>
+						<input id="PhotoJournalVolume" name="PhotoJournalVolume" type="text" size="40" class="f-name" tabindex="2" value="16"><br />						
+					</label>
+					
+					<label for="PhotoJournalIssue">
+						<span class="field">
+							<span class="valid"><b>Issue Number or Designation</b></span>
+						</span>
+						<input id="PhotoJournalIssue" name="PhotoJournalIssue" type="text" size="40" class="f-name" tabindex="3" value="5"><br />						
+					</label>
+					
+					<label for="PhotoJournalMonth">
+						<span class="field">
+							<span class="valid"><b>Month</b></span>
+						</span>
+						<input id="PhotoJournalMonth" name="PhotoJournalMonth" type="text" size="40" class="f-name" tabindex="4" value=""><br />						
+					</label>
+					
+					<label for="PhotoJournalYear">
+						<span class="field">
+							<span class="req">*</span>
+							<span class="valid"><b>Year</b></span>
+						</span>
+						<input id="PhotoJournalYear" name="PhotoJournalYear" type="text" size="40" class="f-name" tabindex="5" value="2010-02-11"><br />						
+					</label>
+					
+					<label for="PhotoJournalInclusivePages">
+						<span class="field">
+							<span class="req">*</span>
+							<span class="valid"><b>Inclusive Pages</b></span>
+						</span>
+						<input id="PhotoJournalInclusivePages" name="PhotoJournalInclusivePages" type="text" size="40" class="f-name" tabindex="6" value="538-
+"><br />						
+					</label>
+					
+					<label for="ISSN">
+						<span class="field">
+							<span class="valid"><b>ISSN/ISBN (International Standard Serial/Book Number)</b></span><br />
+							<span class="note">If given will speed request processing</span>
+						</span>
+						<input id="ISSN" name="ISSN" type="text" size="20" class="f-name" tabindex="7" value="1381-6128"><br />						
+					</label>
+					
+					<label for="CallNumber">
+						<span class="field">
+							<span class="valid"><b>Call Number</b></span>
+						</span>
+						<input id="CallNumber" name="CallNumber" type="text" size="20" class="f-name" tabindex="8" value=""><br />						
+					</label>
+					
+					<label for="ESPNumber">
+						<span class="field">
+							<span class="valid"><b>OCLC or Docline UI Number</b></span>
+						</span>
+						<input id="ESPNumber" name="ESPNumber" type="text" size="20" class="f-name" tabindex="9" value=""><br />						
+					</label>
+					
+					<label for="PhotoArticleAuthor">
+						<span class="field">
+							<span class="valid"><b>Article Author</b></span>
+						</span>
+						<input id="PhotoArticleAuthor" name="PhotoArticleAuthor" type="text" size="40" class="f-name" tabindex="10" value=""><br />						
+					</label>
+					
+					<label for="PhotoArticleTitle">
+						<span class="field">
+							<span class="req">*</span>
+							<span class="valid"><b>Article Title</b></span>
+						</span>
+						<textarea id="PhotoArticleTitle" name="PhotoArticleTitle" rows="2" cols="40" class="f-name" tabindex="11">Targeting α7 Nicotinic Acetylcholine Receptors in the Treatment of Schizophrenia.</textarea><br />
+					</label>
+							
+					<label for="NotWantedAfter">
+						<span class="field">
+							<span class="req">*</span>
+							<span class="valid"><b>Not Wanted After Date</b></span><br />
+							<span class="note">(MM/DD/YYYY)</span>
+						</span>
+						<input id="NotWantedAfter" name="NotWantedAfter" type="text" size="40" class="f-name" tabindex="12" value="07/28/2012"><br />						
+					</label>
+					
+					<label for="AcceptNonEnglish">
+						<span class="field">
+							<span class="valid"><b>Will you accept the item in a language other than English?</b></span><br />
+							<span class="note">If yes, specify acceptable languages in the notes field.</span>
+						</span>
+						<select id="AcceptNonEnglish" name="AcceptNonEnglish" size="1" class="f-name" tabindex="13">
+							<option selected>Yes</option>
+							<option>No</option>
+							<option>Yes</option>
+						</select><br />
+					</label>
+					
+					<label for="AccountNo">
+						<span class="field">
+							<span class="valid"><b>Account Number</b></span>
+						</span>
+						<select id="AccountNo" name="AccountNo" size="1" class="f-name" tabindex="14">
+							
+						</select><br />
+					</label>
+					
+					<label for="Notes">
+						<span class="field">
+							<span class="valid"><b>Notes</b></span><br />
+							<span class="note">Put any information here that may help us find the item, as well as any other pertinent information.</span>
+						</span>
+						<textarea id="Notes" name="Notes" rows="2" cols="40" class="f-name" tabindex="15"></textarea><br />
+					</label>
+					
+					<h2>Where did you learn about this item?</h2>
+					
+<label for="CitedIn">
+	<span class="field">
+		<span class="valid"><b>Where did you find this item cited?</b></span><br />
+		<span class="note">Examples are Dissertation Abstracts, Dialog (specify which database), or a specific journal or book.</span>
+	</span>
+	<textarea id="CitedIn" name="CitedIn" rows="2" cols="40" class="f-name" tabindex="40">bul_easy_article</textarea><br />
+</label>
+
+<label for="CitedDate">
+	<span class="field">
+		<span class="valid"><b>Date of the work that cited the item.</b></span>
+	</span>
+	<input id="CitedDate" name="CitedDate" type="text" size="40" class="f-name" tabindex="41" value=""><br />						
+</label>
+
+<label for="CitedVolume">
+	<span class="field">
+		<span class="valid"><b>Volume number of the work that cited the item.</b></span>
+	</span>
+	<input id="CitedVolume" name="CitedVolume" type="text" size="40" class="f-name" tabindex="42" value=""><br />						
+</label>
+
+<label for="CitedPages">
+	<span class="field">
+		<span class="valid"><b>Pages where the item is cited.</b></span>
+	</span>
+	<input id="CitedPages" name="CitedPages" type="text" size="40" class="f-name" tabindex="43" value=""><br />						
+</label>
+
+                
+                    <div class="f-submit-wrap" align="right">
+	<input type="submit" name="SubmitButton" value="Submit Request" class="f-submit" tabindex="60" />
+	<input type="reset" name="ResetButton" value="Clear Form" class="f-submit" tabindex="61" />
+	<input type="submit" name="SubmitButton" value="Cancel - Return to Main Menu" class="f-submit" tabindex="62" />
+</div>
+
+				</fieldset>
+		</form>		
+      	</div>
+<div id="footer">
+Copyright &copy; 1998-2009 <a href="http://www.atlas-sys.com">Atlas Systems, Inc.</a> All Rights Reserved.
+</div>
+
+
+    </div>    
+  </div>
+</div>
+</body>
+</html>

@@ -3,6 +3,11 @@ from pyquery import PyQuery as pq
 import re
 import parsers
 
+#By default SSL verification will be set to false.
+#This is likely to be run against a local service where 
+#trust has already been established.
+SSL_VERIFICATION = False
+
 class IlliadSession():
     
     def __init__(self, url, auth_header, username):
@@ -24,7 +29,8 @@ class IlliadSession():
                'session_id': None,
                'new_user': False}
         r = requests.get(self.url,
-                         headers=self.header)
+                         headers=self.header,
+                         verify=SSL_VERIFICATION)
         parsed_login = parsers.main_menu(r.content)
         out.update(parsed_login)
         self.session_id = parsed_login['session_id']
@@ -38,8 +44,8 @@ class IlliadSession():
         out = {}
         out['authenticated'] = True
         r = requests.get("%s?SessionID=%s&Action=99" % (self.url,
-                                                        self.session_id)
-                         )
+                                                        self.session_id),
+                         verify=SSL_VERIFICATION)
         logged_out = parsers.logout(r.content)
         out.update(logged_out)
         return out
@@ -55,7 +61,8 @@ class IlliadSession():
                                      open_url)
         r = requests.get(ill_url,
                          headers=self.header,
-                         cookies=self.cookies)
+                         cookies=self.cookies,
+                         verify=SSL_VERIFICATION)
         if r.status_code == 400:
             submit_key['errors'] = True
             submit_key['message'] = 'Invalid request'
@@ -77,7 +84,8 @@ class IlliadSession():
         r = requests.post(self.url,
                           data=submit_key,
                           headers=self.header,
-                          cookies=self.cookies)
+                          cookies=self.cookies,
+                          verify=SSL_VERIFICATION)
         submit_resp = parsers.request_submission(r.content)
         out.update(submit_resp)
         return out
@@ -119,7 +127,8 @@ class IlliadSession():
         r = requests.post(self.url,
                           data=reg_key,
                           headers=self.header,
-                          cookies=self.cookies)
+                          cookies=self.cookies,
+                          verify=SSL_VERIFICATION)
         out = {}
         #out['meta'] = r.content
         out['status_code'] = r.status_code

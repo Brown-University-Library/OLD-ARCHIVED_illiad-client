@@ -68,6 +68,7 @@ class IlliadSession():
                       'blocked': False}
         ill_url = "%s/OpenURL?%s" % (self.url,
                                      open_url)
+        logging.info("ILLiad request form URL %s." % ill_url)
         resp = requests.get(ill_url,
                          headers=self.header,
                          cookies=self.cookies,

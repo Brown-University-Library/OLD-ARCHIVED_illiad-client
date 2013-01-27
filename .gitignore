@@ -1,5 +1,6 @@
 local_settings.py
-debug.py
+debug_illiad.py
+test/data/non_parseable.html
 
 *.py[co]
 

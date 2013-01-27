@@ -48,7 +48,7 @@ class ParserTest(unittest.TestCase):
                          'Current pharmaceutical design')
         atitle = request_key.get('PhotoArticleTitle')
         self.assertEqual(atitle, 
-                         u'Targeting \xce\xb17 Nicotinic Acetylcholine Receptors in the Treatment of Schizophrenia.')
+                         u'Targeting \xce\u01057 Nicotinic Acetylcholine Receptors in the Treatment of Schizophrenia.')
         issn = request_key.get('ISSN')
         self.assertEqual(issn,
                          u'1381-6128')

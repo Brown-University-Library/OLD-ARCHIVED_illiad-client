@@ -10,6 +10,7 @@ import re
 from pyquery import PyQuery as pq
 from bs4 import BeautifulSoup
 
+DIGITS_RE = re.compile('(\d+)')
 
 def main_menu(content):
     out = {'authenticated': False,
@@ -34,7 +35,6 @@ def request_form(content):
     Parse Illiad's OpenUrl request form.
     """
     submit_key = {}
-    #doc = pq(content)
     soup = BeautifulSoup(content)
     title = soup.title
     #check for blocked
@@ -49,7 +49,7 @@ def request_form(content):
             return submit_key
 
     #Get all of the inputs.
-    inputs =  soup('input')
+    inputs = soup('input')
     
     for item in inputs:
         attrs = item.attrs
@@ -84,19 +84,27 @@ def request_submission(content):
            'error': False,
            'message': None
            }
-    doc = pq(content)
-    #errors
-    errors = doc('.statusError').text()
+
+    soup = BeautifulSoup(content)
+    #Check for submission errors.
+    try:
+        errors = soup.select('.statusError')[0].text
+    except IndexError:
+        errors = None
     if errors:
         out['error'] = True
         out['message'] = errors
         return out
     
-    #transaction number
+    #Get transaction number
     #Article Request Received. Transaction Number 473283
-    confirm_message = doc('.statusInformation').text()
-    out['message'] = confirm_message
-    match = re.search('(\d+)', confirm_message)
+    try:
+        confirm_message = soup.select('.statusInformation')[0].text
+        out['message'] = confirm_message
+    except IndexError:
+        out['error'] = True
+        out['message'] = "Unable to find confirmation message"
+    match = re.search(DIGITS_RE, confirm_message)
     if match:
         number = match.groups()[0]
         out['transaction_number'] = number

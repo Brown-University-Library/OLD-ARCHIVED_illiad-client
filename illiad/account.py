@@ -40,14 +40,14 @@ class IlliadSession():
     def logout(self):
         """
         Logs the user out of the given session.
+
+        The logout process just takes the user back to the login screen.
+        We will assume that the logout has been processed after issuing the POST.
         """
         out = {}
-        out['authenticated'] = True
-        resp = requests.get("%s?SessionID=%s&Action=99" % (self.url,
-                                                        self.session_id),
-                         verify=SSL_VERIFICATION)
-        logged_out = parsers.logout(resp.content)
-        out.update(logged_out)
+        resp = requests.get("%s?SessionID=%s&Action=99" % (self.url, self.session_id),
+                            verify=SSL_VERIFICATION)
+        out['authenticated'] = False
         return out
     
     def get_request_key(self, open_url):

@@ -18,12 +18,6 @@ class ParserTest(unittest.TestCase):
         self.assertEqual(login['session_id'],
                          'Q102112146D')
         
-    def test_logout(self):
-        path = os.path.join(DATA_PATH, 'logout.html')
-        content = open(path).read()
-        logout = parsers.logout(content)
-        self.assertFalse(logout['authenticated'])
-        
     def test_needs_registration(self):
         path = os.path.join(DATA_PATH, 'not_registered.html')
         content = open(path).read()

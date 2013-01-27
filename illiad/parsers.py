@@ -27,24 +27,6 @@ def main_menu(content):
     out['authenticated'] = True
     return out
 
-def logout(content):
-    """
-    Parse the returned screen of the logout request.  This is expecting a
-    Brown Illiad login/out page: https://illiad.brown.edu/illiad/illiad.dll
-    
-    There doesn't seem like a real way to ensure that logout has 
-    happened.  
-    """
-    out = {'authenticated': True}
-    doc = pq(content)
-    #Change here if the logout page fails. 
-    logon_button = doc('input[name="SubmitButton"]').attr('value')
-    out['button'] = logon_button
-    if logon_button:
-        if logon_button.rfind('Logon') > -1:
-            out['authenticated'] = False
-    return out
-
 def request_form(content):
     """
     Parse Illiad's OpenUrl request form.

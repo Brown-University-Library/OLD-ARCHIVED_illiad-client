@@ -7,4 +7,8 @@ setup(name='illiad',
     version='0.2',
     packages=find_packages(),
     package_data={'illiad': ['test/data/*.*']},
+    install_requires=[
+        'requests',
+        'beautifulsoup4',
+    ],
 )

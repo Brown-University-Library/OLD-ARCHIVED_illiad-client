@@ -6,29 +6,23 @@ without changing the application logic.
 """
 
 from pyquery import PyQuery as pq
+from bs4 import BeautifulSoup
 import re
 
 def main_menu(content):
     out = {'authenticated': False,
            'session_id': None,
            'registered': None}
-    doc = pq(content)
-    #Session data
-    session_details = doc('#SessionID')
-    session_id = session_details.attr('value')
-    if not session_id:
-        return out
-    #See if the user is registered
-    #page title
-    page_title = doc('title').text()
+    soup = BeautifulSoup(content)
+    page_title = soup.title.text
+    #If the user is registered, the page title will be Illiad Main Menu.
     if page_title == 'ILLiad Main Menu':
         out['registered'] = True
     else:
-        #This is a new user and needs to be registered.
-        #Page title should be ILLiad - Change User Information for unregistered
-        #users.
+        #To do - make this raise a module specific Exception that client
+        #code can handle.
         out['registered'] = False
-    
+    session_id = soup.select('#SessionID')[0].attrs.get('value')
     out['session_id'] = session_id
     out['authenticated'] = True
     return out
@@ -39,9 +33,7 @@ def logout(content):
     Brown Illiad login/out page: https://illiad.brown.edu/illiad/illiad.dll
     
     There doesn't seem like a real way to ensure that logout has 
-    happened.  We'll just expect that it has.  We will scrape the
-    HTML to make sure it looks like the main login page, which 
-    is where the user ends up after logging out.  
+    happened.  
     """
     out = {'authenticated': True}
     doc = pq(content)

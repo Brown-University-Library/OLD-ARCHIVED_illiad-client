@@ -7,7 +7,6 @@ without changing the application logic.
 import logging
 import re
 
-from pyquery import PyQuery as pq
 from bs4 import BeautifulSoup
 
 DIGITS_RE = re.compile('(\d+)')

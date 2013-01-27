@@ -28,10 +28,10 @@ class IlliadSession():
         out = {'authenticated': False,
                'session_id': None,
                'new_user': False}
-        r = requests.get(self.url,
+        resp = requests.get(self.url,
                          headers=self.header,
                          verify=SSL_VERIFICATION)
-        parsed_login = parsers.main_menu(r.content)
+        parsed_login = parsers.main_menu(resp.content)
         out.update(parsed_login)
         self.session_id = parsed_login['session_id']
         self.registered = parsed_login['registered']
@@ -43,10 +43,10 @@ class IlliadSession():
         """
         out = {}
         out['authenticated'] = True
-        r = requests.get("%s?SessionID=%s&Action=99" % (self.url,
+        resp = requests.get("%s?SessionID=%s&Action=99" % (self.url,
                                                         self.session_id),
                          verify=SSL_VERIFICATION)
-        logged_out = parsers.logout(r.content)
+        logged_out = parsers.logout(resp.content)
         out.update(logged_out)
         return out
     
@@ -59,14 +59,14 @@ class IlliadSession():
                       'blocked': False}
         ill_url = "%s/OpenURL?%s" % (self.url,
                                      open_url)
-        r = requests.get(ill_url,
+        resp = requests.get(ill_url,
                          headers=self.header,
                          cookies=self.cookies,
                          verify=SSL_VERIFICATION)
-        if r.status_code == 400:
+        if resp.status_code == 400:
             submit_key['errors'] = True
             submit_key['message'] = 'Invalid request'
-        rkey = parsers.request_form(r.content)
+        rkey = parsers.request_form(resp.content)
         submit_key.update(rkey)
         
         if submit_key['blocked']:
@@ -81,12 +81,12 @@ class IlliadSession():
         #ensure submit_key has proper button value
         submit_key['SubmitButton'] ='Submit Request'
         out = {}
-        r = requests.post(self.url,
+        resp = requests.post(self.url,
                           data=submit_key,
                           headers=self.header,
                           cookies=self.cookies,
                           verify=SSL_VERIFICATION)
-        submit_resp = parsers.request_submission(r.content)
+        submit_resp = parsers.request_submission(resp.content)
         out.update(submit_resp)
         return out
     
@@ -124,14 +124,14 @@ class IlliadSession():
         reg_key['SubmitButton'] = 'Submit Information'
         reg_key['Department'] = 'Other - Unlisted'
         
-        r = requests.post(self.url,
+        resp = requests.post(self.url,
                           data=reg_key,
                           headers=self.header,
                           cookies=self.cookies,
                           verify=SSL_VERIFICATION)
         out = {}
         #out['meta'] = r.content
-        out['status_code'] = r.status_code
+        out['status_code'] = resp.status_code
         self.registered = True
         out['status'] = 'Registered'
         return out

@@ -35,12 +35,13 @@ def request_form(content):
     """
     submit_key = {}
     soup = BeautifulSoup(content)
-    title = soup.title
+    title = soup.title.text
     #check for blocked
     try:
         status_message = soup.select('#status')[0].text
     except IndexError:
         logging.info("Unable to parse status from ILLiad request page %s." % title)
+        status_message = None
     if status_message:
         if status_message.rfind('blocked') > 0:
             submit_key['errors'] = status_message
@@ -55,7 +56,7 @@ def request_form(content):
         name = attrs.get('name')
         value = attrs.get('value')
         #Skip certain values
-        if value is None:
+        if (value is None) or (value == u''):
             continue
         if value.startswith('Clear'):
             continue
@@ -100,12 +101,13 @@ def request_submission(content):
     try:
         confirm_message = soup.select('.statusInformation')[0].text
         out['message'] = confirm_message
+        match = re.search(DIGITS_RE, confirm_message)
+        if match:
+            number = match.groups()[0]
+            out['transaction_number'] = number
+            out['submitted'] = True
     except IndexError:
         out['error'] = True
         out['message'] = "Unable to find confirmation message"
-    match = re.search(DIGITS_RE, confirm_message)
-    if match:
-        number = match.groups()[0]
-        out['transaction_number'] = number
-        out['submitted'] = True
+
     return out

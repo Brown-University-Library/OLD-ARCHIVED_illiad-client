@@ -1,6 +1,12 @@
-import requests
-from pyquery import PyQuery as pq
+"""
+ILLiad account handling.
+"""
+
+import logging
 import re
+
+import requests
+
 import parsers
 
 #By default SSL verification will be set to false.

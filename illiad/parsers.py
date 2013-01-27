@@ -4,10 +4,12 @@ Parsing utilities for various Illiad account pages.
 Parsers are separated so that they can be unit tested more easily and adjusted
 without changing the application logic.
 """
+import logging
+import re
 
 from pyquery import PyQuery as pq
 from bs4 import BeautifulSoup
-import re
+
 
 def main_menu(content):
     out = {'authenticated': False,
@@ -32,30 +34,43 @@ def request_form(content):
     Parse Illiad's OpenUrl request form.
     """
     submit_key = {}
-    doc = pq(content)
+    #doc = pq(content)
+    soup = BeautifulSoup(content)
+    title = soup.title
     #check for blocked
-    status_message = doc('#status').text()
+    try:
+        status_message = soup.select('#status')[0].text
+    except IndexError:
+        logging.info("Unable to parse status from ILLiad request page %s." % title)
     if status_message:
         if status_message.rfind('blocked') > 0:
             submit_key['errors'] = status_message
             submit_key['blocked'] = True
             return submit_key
-    inputs =  doc('form').find('input')
+
+    #Get all of the inputs.
+    inputs =  soup('input')
     
-    for i in inputs:
-        #skip certain values
-        if not i.value:
+    for item in inputs:
+        attrs = item.attrs
+        name = attrs.get('name')
+        value = attrs.get('value')
+        #Skip certain values
+        if value is None:
             continue
-        if i.value.startswith('Clear'):
+        if value.startswith('Clear'):
             continue
-        if i.value.startswith('Cancel'):
+        if value.startswith('Cancel'):
             continue
-        submit_key[i.name] = i.value
+        submit_key[name] = value
     
-    #add text areas too
-    texts = doc('form').find('textarea')
-    for t in texts:
-        submit_key[t.name] = t.value
+    #Add text areas too
+    textareas = soup('textarea')
+    for box in textareas:
+        name = box.attrs['name']
+        value = box.text
+        if (value is not None) and (value != ''):
+            submit_key[name] = value
         
     return submit_key
 

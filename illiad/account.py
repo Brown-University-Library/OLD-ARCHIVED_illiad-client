@@ -81,7 +81,7 @@ class IlliadSession():
         #This key has been found in some ILLiad responses and appears
         #to be causing the ILLiad server to return unspecified errors.
         #Simply deleting it if it is found.
-        del submit_key['IlliadForm']
+        submit_key.pop('IlliadForm', None)
         if submit_key['blocked']:
             self.blocked_patron = True
         return submit_key

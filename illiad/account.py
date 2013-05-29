@@ -78,7 +78,10 @@ class IlliadSession():
             submit_key['message'] = 'Invalid request'
         rkey = parsers.request_form(resp.content)
         submit_key.update(rkey)
-        
+        #This key has been found in some ILLiad responses and appears
+        #to be causing the ILLiad server to return unspecified errors.
+        #Simply deleting it if it is found.
+        del submit_key['IlliadForm']
         if submit_key['blocked']:
             self.blocked_patron = True
         return submit_key

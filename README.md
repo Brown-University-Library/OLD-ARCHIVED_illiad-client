@@ -1,4 +1,4 @@
-illiad-api
+illiad-client
 ==========
 
 A Python library for interacting with the [Illiad Interlibrary Loan](http://www.atlas-sys.com/illiad/) software.

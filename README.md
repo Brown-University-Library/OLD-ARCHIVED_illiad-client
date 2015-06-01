@@ -3,6 +3,15 @@ illiad-client
 
 A Python library for interacting with the [Illiad Interlibrary Loan](http://www.atlas-sys.com/illiad/) software.
 
+Install 
+------------
+
+$ pip install git+https://github.com/Brown-University-Library/illiad-client.git
+
+or clone the repo and run:
+
+$ pyton setup.py install
+
 ILLiad features supported
 -------------
  * submitting user requests via OpenURL

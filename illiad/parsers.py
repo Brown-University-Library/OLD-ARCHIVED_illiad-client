@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 """
 Parsing utilities for various Illiad account pages.
 
@@ -9,13 +13,14 @@ import re
 
 from bs4 import BeautifulSoup
 
+
 DIGITS_RE = re.compile('(\d+)')
 
 def main_menu(content):
     out = {'authenticated': False,
            'session_id': None,
            'registered': None}
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup( content, 'html.parser' )
     page_title = soup.title.text
     #If the user is registered, the page title will be Illiad Main Menu.
     if page_title == 'ILLiad Main Menu':
@@ -34,7 +39,7 @@ def request_form(content):
     Parse Illiad's OpenUrl request form.
     """
     submit_key = {}
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup( content, 'html.parser' )
     title = soup.title.text
     #check for blocked
     try:
@@ -50,7 +55,7 @@ def request_form(content):
 
     #Get all of the inputs.
     inputs = soup('input')
-    
+
     for item in inputs:
         attrs = item.attrs
         name = attrs.get('name')
@@ -63,7 +68,7 @@ def request_form(content):
         if value.startswith('Cancel'):
             continue
         submit_key[name] = value
-    
+
     #Add text areas too
     textareas = soup('textarea')
     for box in textareas:
@@ -71,7 +76,7 @@ def request_form(content):
         value = box.text
         if (value is not None) and (value != ''):
             submit_key[name] = value
-        
+
     return submit_key
 
 def request_submission(content):
@@ -85,7 +90,7 @@ def request_submission(content):
            'message': None
            }
 
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup( content, 'html.parser' )
     #Check for submission errors.
     try:
         errors = soup.select('.statusError')[0].text
@@ -95,7 +100,7 @@ def request_submission(content):
         out['error'] = True
         out['message'] = errors
         return out
-    
+
     #Get transaction number
     #Article Request Received. Transaction Number 473283
     try:

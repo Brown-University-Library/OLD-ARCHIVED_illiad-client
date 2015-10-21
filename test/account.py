@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 import os
 import unittest
 
@@ -6,6 +9,7 @@ from illiad.account import IlliadSession
 #This is assuming there is a local_settings file somewhere on your path
 #See a sample in local_settings.tmpl
 import local_settings
+
 
 class AccountTest(unittest.TestCase):
     def setUp(self):
@@ -21,8 +25,8 @@ class AccountTest(unittest.TestCase):
         self.assertTrue(login.has_key('authenticated'))
         self.assertTrue(login.has_key('registered'))
         self.assertTrue(login['authenticated'])
-        
-        
+
+
     def test_submit_key(self):
        ill = self.ill
        ill.login()
@@ -34,7 +38,7 @@ class AccountTest(unittest.TestCase):
        self.assertEqual(submit_key['PhotoJournalTitle'],
                         'Current pharmaceutical design')
        ill.logout()
-       
+
     def test_book(self):
       ill = self.ill
       ill.login()

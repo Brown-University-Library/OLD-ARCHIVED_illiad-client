@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 """
 ILLiad account handling.
 """
@@ -10,12 +13,13 @@ import requests
 import parsers
 
 #By default SSL verification will be set to false.
-#This is likely to be run against a local service where 
+#This is likely to be run against a local service where
 #trust has already been established.
 SSL_VERIFICATION = False
 
+
 class IlliadSession():
-    
+
     def __init__(self, url, auth_header, username):
         self.username = username
         self.session_id = None
@@ -26,7 +30,7 @@ class IlliadSession():
         #Requests module doesn't like unicode for header values.
         self.header={self.auth_header: str(self.username)}
         self.cookies = dict(ILLiadSessionID=self.session_id)
-        
+
     def login(self):
         """
         Logs the user in to Illiad and sets the session id.
@@ -44,7 +48,7 @@ class IlliadSession():
         logging.info("ILLiad session %s established for %s.  Registered: %s" %\
                         (self.session_id, self.username, self.registered))
         return out
-        
+
     def logout(self):
         """
         Logs the user out of the given session.
@@ -58,10 +62,10 @@ class IlliadSession():
         logging.info("ILLiad session %s ended for %s." % (self.session_id, self.username))
         out['authenticated'] = False
         return out
-    
+
     def get_request_key(self, open_url):
         """
-        Get the submission key necessary by hitting the Illiad form and 
+        Get the submission key necessary by hitting the Illiad form and
         parsing the input elements.
         """
         submit_key = {'errors': None,
@@ -85,8 +89,8 @@ class IlliadSession():
         if submit_key['blocked']:
             self.blocked_patron = True
         return submit_key
-    
-    
+
+
     def make_request(self, submit_key):
         """
         Place the request in Illiad.
@@ -102,16 +106,16 @@ class IlliadSession():
         submit_resp = parsers.request_submission(resp.content)
         out.update(submit_resp)
         return out
-    
+
     def register_user(self, user_dict, **kwargs):
         """
-        user_dict contains the required information about the patron.  
+        user_dict contains the required information about the patron.
 
-        Pass in alternate keywords to specify other user attributes, 
+        Pass in alternate keywords to specify other user attributes,
         e.g: site="Medical Library"
 
         """
-        #pull appropriate user dict variables.  Set some defaults.  
+        #pull appropriate user dict variables.  Set some defaults.
         first_name = user_dict.get('first_name', None)
         last_name = user_dict.get('last_name', None)
         email = user_dict.get('email', None)
@@ -120,11 +124,11 @@ class IlliadSession():
         address = user_dict.get('address', 'See campus directory')
         phone = user_dict.get('phone', 'N/A')
         reg_key = {}
-        reg_key['SessionID'] = self.session_id  
-        reg_key['ILLiadForm'] = 'ChangeUserInformation'  
-        reg_key['Username'] = self.username  
+        reg_key['SessionID'] = self.session_id
+        reg_key['ILLiadForm'] = 'ChangeUserInformation'
+        reg_key['Username'] = self.username
         reg_key['FirstName'] = first_name
-        reg_key['LastName'] = last_name 
+        reg_key['LastName'] = last_name
         reg_key['EMailAddress'] = email
         reg_key['StatusGroup'] = status
         reg_key['Phone'] = phone
@@ -132,15 +136,15 @@ class IlliadSession():
         #defaults
         reg_key['NotifyGroup'] = 'E-Mail'
         reg_key['DeliveryGroup'] = 'Electronic Delivery if Possible'
-        reg_key['LoanDeliveryGroup'] = 'Hold for Pickup'  
+        reg_key['LoanDeliveryGroup'] = 'Hold for Pickup'
         reg_key['WebDeliveryGroup'] = 'Yes'
         reg_key['Site'] = kwargs.get('site', 'Rockefeller Circ. Desk')
-        reg_key['NVTGC'] = 'ILL' 
+        reg_key['NVTGC'] = 'ILL'
         reg_key['SubmitButton'] = 'Submit Information'
         reg_key['Department'] = kwargs.get('department', 'Other - Unlisted')
-        
+
         logging.info("Registering %s with ILLiad as %s." % (self.username, status))
-  
+
         resp = requests.post(self.url,
                           data=reg_key,
                           headers=self.header,
@@ -152,7 +156,7 @@ class IlliadSession():
         self.registered = True
         out['status'] = 'Registered'
         return out
-        
-    
-    
-        
+
+
+
+

@@ -60,12 +60,15 @@ def request_form(content):
         attrs = item.attrs
         name = attrs.get('name')
         value = attrs.get('value')
+        # print 'in parser-inputs; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
         #Skip certain values
         if (value is None) or (value == u''):
             continue
         if value.startswith('Clear'):
             continue
         if value.startswith('Cancel'):
+            continue
+        if name == 'IlliadForm':  # we're still capturing ILLiadForm (note case of 'L's)
             continue
         submit_key[name] = value
 
@@ -74,10 +77,56 @@ def request_form(content):
     for box in textareas:
         name = box.attrs['name']
         value = box.text
+        # print 'in parser-textareas; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
         if (value is not None) and (value != ''):
             submit_key[name] = value
 
     return submit_key
+
+# def request_form(content):
+#     """
+#     Parse Illiad's OpenUrl request form.
+#     """
+#     submit_key = {}
+#     soup = BeautifulSoup( content, 'html.parser' )
+#     title = soup.title.text
+#     #check for blocked
+#     try:
+#         status_message = soup.select('#status')[0].text
+#     except IndexError:
+#         logging.info("Unable to parse status from ILLiad request page %s." % title)
+#         status_message = None
+#     if status_message:
+#         if status_message.rfind('blocked') > 0:
+#             submit_key['errors'] = status_message
+#             submit_key['blocked'] = True
+#             return submit_key
+
+#     #Get all of the inputs.
+#     inputs = soup('input')
+
+#     for item in inputs:
+#         attrs = item.attrs
+#         name = attrs.get('name')
+#         value = attrs.get('value')
+#         #Skip certain values
+#         if (value is None) or (value == u''):
+#             continue
+#         if value.startswith('Clear'):
+#             continue
+#         if value.startswith('Cancel'):
+#             continue
+#         submit_key[name] = value
+
+#     #Add text areas too
+#     textareas = soup('textarea')
+#     for box in textareas:
+#         name = box.attrs['name']
+#         value = box.text
+#         if (value is not None) and (value != ''):
+#             submit_key[name] = value
+
+#     return submit_key
 
 def request_submission(content):
     """

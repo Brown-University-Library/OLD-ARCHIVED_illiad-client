@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import os, pprint, unittest
-from illiad.account import IlliadSession
+import os, sys, pprint, unittest
 
 
 class AccountTest(unittest.TestCase):
@@ -11,8 +10,19 @@ class AccountTest(unittest.TestCase):
         self.ILLIAD_REMOTE_AUTH_URL = os.environ['ILLIAD_MODULE__TEST_REMOTE_AUTH_URL']
         self.ILLIAD_REMOTE_AUTH_KEY = os.environ['ILLIAD_MODULE__TEST_REMOTE_AUTH_KEY']
         self.ILLIAD_USERNAME = os.environ['ILLIAD_MODULE__TEST_USERNAME']
+        self.PROJECT_DIR_PATH = os.environ['ILLIAD_MODULE__TEST_PATH']
+        self._setup_path()
+        from illiad.account import IlliadSession
         self.ill = IlliadSession(
             self.ILLIAD_REMOTE_AUTH_URL, self.ILLIAD_REMOTE_AUTH_KEY, self.ILLIAD_USERNAME )
+
+    def _setup_path(self):
+        """ Adds project dir path to sys path if necessary.
+            Allows `from illiad.account...` to work
+            Called by setUp() """
+        if self.PROJECT_DIR_PATH not in sys.path:
+            sys.path.append( self.PROJECT_DIR_PATH )
+        return
 
     def test_login(self):
         login = self.ill.login()
@@ -48,9 +58,12 @@ class AccountTest(unittest.TestCase):
         ill.login()
         openurl = 'url_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&rft.genre=bookitem&rft.btitle=Current%20Protocols%20in%20Immunology&rft.atitle=Isolation%20and%20Functional%20Analysis%20of%20Neutrophils&rft.date=2001-05-01&rft.isbn=9780471142737&rfr_id=info%3Asid%2Fwiley.com%3AOnlineLibrary'
         submit_key = ill.get_request_key( openurl )
-        pprint.pprint( submit_key )
+        # print 'in test...'; pprint.pprint( submit_key )
         self.assertEqual(
-            'foo', 'bar' )
+            'BookChapterRequest', submit_key['ILLiadForm'] )
+        self.assertEqual(
+            ['CitedIn', 'ILLiadForm', 'ISSN', 'NotWantedAfter', 'PhotoArticleTitle', 'PhotoJournalInclusivePages', 'PhotoJournalTitle', 'PhotoJournalYear', 'SearchType', 'SessionID', 'SubmitButton', 'Username', 'blocked', 'errors'],
+            sorted(submit_key.keys()) )
 
     def test_logout(self):
         logout = self.ill.logout()

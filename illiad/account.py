@@ -65,23 +65,30 @@ class IlliadSession():
         Get the submission key necessary by hitting the Illiad form and
         parsing the input elements.
         """
-        submit_key = {'errors': None,
-                      'blocked': False}
-        ill_url = "%s/OpenURL?%s" % (self.url,
-                                     open_url)
+        submit_key = { 'errors': None, 'blocked': False }
+        ill_url = "%s/OpenURL?%s" % ( self.url, open_url )
         logging.info("ILLiad request form URL %s." % ill_url)
-        resp = requests.get(ill_url,
-                         headers=self.header,
-                         cookies=self.cookies,
-                         verify=SSL_VERIFICATION)
-        if resp.status_code == 400:
-            submit_key['errors'] = True
-            submit_key['message'] = 'Invalid request'
+        resp = requests.get( ill_url, headers=self.header, cookies=self.cookies, verify=SSL_VERIFICATION )
+        submit_key = self._check_400( resp, submit_key )
         rkey = parsers.request_form(resp.content)
         submit_key.update(rkey)
         if submit_key['blocked']:
             self.blocked_patron = True
-        if submit_key['ILLiadForm'] == 'BookChapterRequest':  # check required fields
+        submit_key = self._ensure_required_fields( submit_key )
+        return submit_key
+
+    def _check_400( self, resp, submit_key ):
+        """ Updates dct on 400-status.
+            Called by get_request_key() """
+        if resp.status_code == 400:
+            submit_key['errors'] = True
+            submit_key['message'] = 'Invalid request'
+        return submit_key
+
+    def _ensure_required_fields( self, submit_key ):
+        """ Adds form required fields if necessary.
+            Called by get_request_key() """
+        if submit_key['ILLiadForm'] == 'BookChapterRequest':
             submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
             submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
         return submit_key

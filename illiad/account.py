@@ -5,11 +5,8 @@ from __future__ import unicode_literals
 ILLiad account handling.
 """
 
-import logging
-import re
-
+import logging, pprint, re
 import requests
-
 import parsers
 
 #By default SSL verification will be set to false.
@@ -82,43 +79,12 @@ class IlliadSession():
             submit_key['message'] = 'Invalid request'
         rkey = parsers.request_form(resp.content)
         submit_key.update(rkey)
-        #This key has been found in some ILLiad responses and appears
-        #to be causing the ILLiad server to return unspecified errors.
-        #Simply deleting it if it is found.
-        submit_key.pop('IlliadForm', None)
         if submit_key['blocked']:
             self.blocked_patron = True
-        if submit_key['IlliadForm'] == 'BookChapterRequest':  # check required fields
-            submit_key['PhotoJournalTitle'] = ''  # label, 'Book Title'
-            submit_key['PhotoJournalInclusivePages'] = ''  # label, 'Inclusive Pages'
+        if submit_key['ILLiadForm'] == 'BookChapterRequest':  # check required fields
+            submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
+            submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
         return submit_key
-
-    # def get_request_key(self, open_url):
-    #     """
-    #     Get the submission key necessary by hitting the Illiad form and
-    #     parsing the input elements.
-    #     """
-    #     submit_key = {'errors': None,
-    #                   'blocked': False}
-    #     ill_url = "%s/OpenURL?%s" % (self.url,
-    #                                  open_url)
-    #     logging.info("ILLiad request form URL %s." % ill_url)
-    #     resp = requests.get(ill_url,
-    #                      headers=self.header,
-    #                      cookies=self.cookies,
-    #                      verify=SSL_VERIFICATION)
-    #     if resp.status_code == 400:
-    #         submit_key['errors'] = True
-    #         submit_key['message'] = 'Invalid request'
-    #     rkey = parsers.request_form(resp.content)
-    #     submit_key.update(rkey)
-    #     #This key has been found in some ILLiad responses and appears
-    #     #to be causing the ILLiad server to return unspecified errors.
-    #     #Simply deleting it if it is found.
-    #     submit_key.pop('IlliadForm', None)
-    #     if submit_key['blocked']:
-    #         self.blocked_patron = True
-    #     return submit_key
 
     def make_request(self, submit_key):
         """

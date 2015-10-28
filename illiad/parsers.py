@@ -34,14 +34,10 @@ def main_menu(content):
     out['authenticated'] = True
     return out
 
-def request_form(content):
-    """
-    Parse Illiad's OpenUrl request form.
-    """
-    submit_key = {}
-    soup = BeautifulSoup( content, 'html.parser' )
-    title = soup.title.text
-    #check for blocked
+
+def _check_blocked( soup, submit_key ):
+    """ Checks for blocked status.
+        Called by request_form() """
     try:
         status_message = soup.select('#status')[0].text
     except IndexError:
@@ -51,7 +47,16 @@ def request_form(content):
         if status_message.rfind('blocked') > 0:
             submit_key['errors'] = status_message
             submit_key['blocked'] = True
-            return submit_key
+    return submit_key
+
+def request_form(content):
+    """
+    Parse Illiad's OpenUrl request form.
+    """
+    submit_key = {}
+    soup = BeautifulSoup( content, 'html.parser' )
+    title = soup.title.text
+    submit_key = _check_blocked( soup, submit_key )
 
     #Get all of the inputs.
     inputs = soup('input')
@@ -109,12 +114,15 @@ def request_form(content):
 #         attrs = item.attrs
 #         name = attrs.get('name')
 #         value = attrs.get('value')
+#         # print 'in parser-inputs; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
 #         #Skip certain values
 #         if (value is None) or (value == u''):
 #             continue
 #         if value.startswith('Clear'):
 #             continue
 #         if value.startswith('Cancel'):
+#             continue
+#         if name == 'IlliadForm':  # we're still capturing ILLiadForm (note case of 'L's)
 #             continue
 #         submit_key[name] = value
 
@@ -123,10 +131,13 @@ def request_form(content):
 #     for box in textareas:
 #         name = box.attrs['name']
 #         value = box.text
+#         # print 'in parser-textareas; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
 #         if (value is not None) and (value != ''):
 #             submit_key[name] = value
 
 #     return submit_key
+
+
 
 def request_submission(content):
     """

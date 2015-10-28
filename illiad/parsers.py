@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-
 """
 Parsing utilities for various Illiad account pages.
 
 Parsers are separated so that they can be unit tested more easily and adjusted
 without changing the application logic.
 """
-import logging
-import re
-
+import logging, re
 from bs4 import BeautifulSoup
 
 
 DIGITS_RE = re.compile('(\d+)')
+
 
 def main_menu(content):
     out = {'authenticated': False,
@@ -35,10 +33,22 @@ def main_menu(content):
     return out
 
 
+def request_form(content):
+    """ Parses illiad's openurl request form.
+        Returns dct of values which will be POSTed to submit the request.
+        Called by account.py IlliadSession.get_request_key() """
+    submit_key = {}
+    soup = BeautifulSoup( content, 'html.parser' )
+    submit_key = _check_blocked( soup, submit_key )
+    submit_key = _check_inputs( soup, submit_key )
+    submit_key = _check_textareas( soup, submit_key )
+    return submit_key
+
 def _check_blocked( soup, submit_key ):
     """ Checks for blocked status.
         Called by request_form() """
     try:
+        title = soup.title.text
         status_message = soup.select('#status')[0].text
     except IndexError:
         logging.info("Unable to parse status from ILLiad request page %s." % title)
@@ -49,94 +59,31 @@ def _check_blocked( soup, submit_key ):
             submit_key['blocked'] = True
     return submit_key
 
-def request_form(content):
-    """
-    Parse Illiad's OpenUrl request form.
-    """
-    submit_key = {}
-    soup = BeautifulSoup( content, 'html.parser' )
-    title = soup.title.text
-    submit_key = _check_blocked( soup, submit_key )
-
-    #Get all of the inputs.
-    inputs = soup('input')
-
+def _check_inputs( soup, submit_key ):
+    """ Updates key-dct with html input data.
+        Called by request_form() """
+    inputs = soup( 'input' )
     for item in inputs:
         attrs = item.attrs
         name = attrs.get('name')
         value = attrs.get('value')
-        # print 'in parser-inputs; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
-        #Skip certain values
-        if (value is None) or (value == u''):
-            continue
-        if value.startswith('Clear'):
-            continue
-        if value.startswith('Cancel'):
+        if (value is None) or (value == u'') or (value.startswith('Clear')) or (value.startswith('Cancel')):
             continue
         if name == 'IlliadForm':  # we're still capturing ILLiadForm (note case of 'L's)
             continue
         submit_key[name] = value
+    return submit_key
 
-    #Add text areas too
-    textareas = soup('textarea')
+def _check_textareas( soup, submit_key ):
+    """ Updates key-dct with html textarea data.
+        Called by request_form() """
+    textareas = soup( 'textarea' )
     for box in textareas:
         name = box.attrs['name']
         value = box.text
-        # print 'in parser-textareas; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
         if (value is not None) and (value != ''):
             submit_key[name] = value
-
     return submit_key
-
-# def request_form(content):
-#     """
-#     Parse Illiad's OpenUrl request form.
-#     """
-#     submit_key = {}
-#     soup = BeautifulSoup( content, 'html.parser' )
-#     title = soup.title.text
-#     #check for blocked
-#     try:
-#         status_message = soup.select('#status')[0].text
-#     except IndexError:
-#         logging.info("Unable to parse status from ILLiad request page %s." % title)
-#         status_message = None
-#     if status_message:
-#         if status_message.rfind('blocked') > 0:
-#             submit_key['errors'] = status_message
-#             submit_key['blocked'] = True
-#             return submit_key
-
-#     #Get all of the inputs.
-#     inputs = soup('input')
-
-#     for item in inputs:
-#         attrs = item.attrs
-#         name = attrs.get('name')
-#         value = attrs.get('value')
-#         # print 'in parser-inputs; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
-#         #Skip certain values
-#         if (value is None) or (value == u''):
-#             continue
-#         if value.startswith('Clear'):
-#             continue
-#         if value.startswith('Cancel'):
-#             continue
-#         if name == 'IlliadForm':  # we're still capturing ILLiadForm (note case of 'L's)
-#             continue
-#         submit_key[name] = value
-
-#     #Add text areas too
-#     textareas = soup('textarea')
-#     for box in textareas:
-#         name = box.attrs['name']
-#         value = box.text
-#         # print 'in parser-textareas; name, `%s`; value, `%s`; type(name), `%s`' % ( name, value, type(value) )
-#         if (value is not None) and (value != ''):
-#             submit_key[name] = value
-
-#     return submit_key
-
 
 
 def request_submission(content):

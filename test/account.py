@@ -16,6 +16,9 @@ class AccountTest(unittest.TestCase):
         self.ill = IlliadSession(
             self.ILLIAD_REMOTE_AUTH_URL, self.ILLIAD_REMOTE_AUTH_KEY, self.ILLIAD_USERNAME )
 
+    def tearDown(self):
+        self.ill.logout()
+
     def _setup_path(self):
         """ Adds project dir path to sys path if necessary.
             Allows `from illiad.account...` to work
@@ -41,17 +44,31 @@ class AccountTest(unittest.TestCase):
                         'ArticleRequest')
        self.assertEqual(submit_key['PhotoJournalTitle'],
                         'Current pharmaceutical design')
-       ill.logout()
 
     def test_book(self):
-      ill = self.ill
-      ill.login()
-      #Url encoded
-      openurl = "sid=FirstSearch:WorldCat&genre=book&isbn=9780231122375&title=Mahatma%20Gandhi%20%3A%20nonviolent%20power%20in%20action&date=2000&rft.genre=book"
-      submit_key = ill.get_request_key(openurl)
-      self.assertEqual(submit_key['ILLiadForm'], 'LoanRequest')
-      self.assertEqual(submit_key['LoanTitle'], 'Mahatma Gandhi : nonviolent power in action')
-      ill.logout()
+        ill = self.ill
+        ill.login()
+        openurl = "sid=FirstSearch:WorldCat&genre=book&isbn=9780231122375&title=Mahatma%20Gandhi%20%3A%20nonviolent%20power%20in%20action&date=2000&rft.genre=book"
+        submit_key = ill.get_request_key(openurl)
+        # print 'in test_book()...'; pprint.pprint( submit_key )
+        self.assertEqual( 'LoanRequest', submit_key['ILLiadForm'] )
+        self.assertEqual( 'Mahatma Gandhi : nonviolent power in action', submit_key['LoanTitle'] )
+        self.assertEqual( 'LoanRequest', submit_key['ILLiadForm'] )
+        self.assertEqual(
+            ['CitedIn', 'ILLiadForm', 'ISSN', 'LoanDate', 'LoanTitle', 'NotWantedAfter', 'SearchType', 'SessionID', 'SubmitButton', 'Username', 'blocked', 'errors'],
+            sorted(submit_key.keys()) )
+
+    def test_book_with_long_openurl(self):
+        ill = self.ill
+        ill.login()
+        openurl = 'sid=FirstSearch%3AWorldCat&genre=book&isbn=9784883195732&title=Shin+kanzen+masuta%CC%84.+Nihongo+no%CC%84ryoku+shiken&date=2011&aulast=Fukuoka&aufirst=Rieko&id=doi%3A&pid=858811926%3Cfssessid%3E0%3C%2Ffssessid%3E%3Cedition%3EShohan.%3C%2Fedition%3E&url_ver=Z39.88-2004&rfr_id=info%3Asid%2Ffirstsearch.oclc.org%3AWorldCat&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&rft.genre=book&req_dat=%3Csessionid%3E0%3C%2Fsessionid%3E&rfe_dat=%3Caccessionnumber%3E858811926%3C%2Faccessionnumber%3E&rft_id=info%3Aoclcnum%2F858811926&rft_id=urn%3AISBN%3A9784883195732&rft.aulast=Fukuoka&rft.aufirst=Rieko&rft.btitle=Shin+kanzen+masuta%CC%84.+Nihongo+no%CC%84ryoku+shiken&rft.date=2011&rft.isbn=9784883195732&rft.place=To%CC%84kyo%CC%84&rft.pub=Suri%CC%84e%CC%84+Nettowa%CC%84ku&rft.edition=Shohan.&rft.genre=book'
+        submit_key = ill.get_request_key( openurl )
+        # print 'in test_book_returning_no_ILLiadForm()...'; pprint.pprint( submit_key )
+        self.assertEqual(
+            'LoanRequest', submit_key['ILLiadForm'] )
+        self.assertEqual(
+            ['CitedIn', 'ESPNumber', 'ILLiadForm', 'ISSN', 'LoanAuthor', 'LoanDate', 'LoanEdition', 'LoanPlace', 'LoanPublisher', 'LoanTitle', 'NotWantedAfter', 'SearchType', 'SessionID', 'SubmitButton', 'Username', 'blocked', 'errors'],
+            sorted(submit_key.keys()) )
 
     def test_bookitem(self):
         ill = self.ill

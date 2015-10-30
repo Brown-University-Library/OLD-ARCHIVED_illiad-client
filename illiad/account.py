@@ -77,23 +77,6 @@ class IlliadSession():
         submit_key = self._ensure_required_fields( submit_key, open_url )
         return submit_key
 
-    # def get_request_key(self, open_url):
-    #     """
-    #     Get the submission key necessary by hitting the Illiad form and
-    #     parsing the input elements.
-    #     """
-    #     submit_key = { 'errors': None, 'blocked': False }
-    #     ill_url = "%s/OpenURL?%s" % ( self.url, open_url )
-    #     logging.info("ILLiad request form URL %s." % ill_url)
-    #     resp = requests.get( ill_url, headers=self.header, cookies=self.cookies, verify=SSL_VERIFICATION )
-    #     submit_key = self._check_400( resp, submit_key )
-    #     rkey = parsers.request_form(resp.content)
-    #     submit_key.update(rkey)
-    #     if submit_key['blocked']:
-    #         self.blocked_patron = True
-    #     submit_key = self._ensure_required_fields( submit_key )
-    #     return submit_key
-
     def _check_400( self, resp, submit_key ):
         """ Updates dct on 400-status.
             Called by get_request_key() """
@@ -128,38 +111,6 @@ class IlliadSession():
                     separator = '' if len(submit_key['Notes']) == 0 else ' | '
                     submit_key['Notes'] = '%s%sentire openurl: `%s`' % ( submit_key['Notes'], separator, open_url )
         return submit_key
-
-    # def _ensure_required_fields( self, submit_key, open_url ):
-    #     """ Adds form required fields if necessary.
-    #         Called by get_request_key() """
-    #     if 'ILLiadForm' in submit_key.keys():  # won't exist if user is blocked
-    #         if submit_key['ILLiadForm'] == 'BookChapterRequest':
-    #             submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
-    #             submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
-    #         elif submit_key['ILLiadForm'] == 'LoanRequest':
-    #             submit_key.setdefault( 'LoanDate', '(date-not-found)' )
-    #             submit_key.setdefault( 'LoanTitle', '(title-not-found)' )
-    #             parts = open_url.split( '&' )
-    #             logging.debug( 'parts, `%s`' % parts )
-    #             if len( parts ) == 2:
-    #                 for part in parts:
-    #                     if 'id=pmid' in part:
-    #                         submit_key.setdefault( 'Notes', '' )
-    #                         separator = '' if len(submit_key['Notes']) == 0 else ' | '
-    #                         submit_key['Notes'] = '%s%sentire openurl: `%s`' % ( submit_key['Notes'], separator, open_url )
-    #     return submit_key
-
-    # def _ensure_required_fields( self, submit_key ):
-    #     """ Adds form required fields if necessary.
-    #         Called by get_request_key() """
-    #     if 'ILLiadForm' in submit_key.keys():  # won't exist if user is blocked
-    #         if submit_key['ILLiadForm'] == 'BookChapterRequest':
-    #             submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
-    #             submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
-    #         elif submit_key['ILLiadForm'] == 'LoanRequest':
-    #             submit_key.setdefault( 'LoanDate', '(date-not-found)' )
-    #             submit_key.setdefault( 'LoanTitle', '(title-not-found)' )
-    #     return submit_key
 
     def make_request(self, submit_key):
         """

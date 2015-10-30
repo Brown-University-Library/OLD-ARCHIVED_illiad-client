@@ -88,9 +88,10 @@ class IlliadSession():
     def _ensure_required_fields( self, submit_key ):
         """ Adds form required fields if necessary.
             Called by get_request_key() """
-        if submit_key['ILLiadForm'] == 'BookChapterRequest':
-            submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
-            submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
+        if 'ILLiadForm' in submit_key.keys():
+            if submit_key['ILLiadForm'] == 'BookChapterRequest':
+                submit_key.setdefault( 'PhotoJournalTitle', '(title-not-found)' )  # form label, 'Book Title'
+                submit_key.setdefault( 'PhotoJournalInclusivePages', '(pages-not-found)' )  # form label, 'Inclusive Pages'
         return submit_key
 
     def make_request(self, submit_key):

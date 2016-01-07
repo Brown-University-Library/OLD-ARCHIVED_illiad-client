@@ -29,9 +29,7 @@ class IlliadSession():
         self.cookies = dict(ILLiadSessionID=self.session_id)
 
     def login(self):
-        """
-        Logs the user in to Illiad and sets the session id.
-        """
+        """ Logs the user in to Illiad and sets the session id. """
         out = { 'authenticated': False, 'session_id': None, 'new_user': False }
         resp = requests.get( self.url, headers=self.header, verify=SSL_VERIFICATION )
         if self._check_blocked( resp.text ) == True:
@@ -45,7 +43,7 @@ class IlliadSession():
 
     def _check_blocked( self, resp_text ):
         """ Checks if login attempt indicates user is blocked.
-            TODO: refactor parsers._check_blocked()
+            TODO: refactor parsers._check_blocked() because if user is blocked, code-flow never gets there; was failing on the `#SessionID` selection in parsers.main_menu()
             Called by login() """
         logging.debug( 'resp.text, ```%s```' % resp_text )
         if 'you have been blocked' in resp_text.lower():

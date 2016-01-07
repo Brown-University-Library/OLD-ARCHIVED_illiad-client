@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import os
+import os, sys
 import unittest
 
 from illiad.account import parsers

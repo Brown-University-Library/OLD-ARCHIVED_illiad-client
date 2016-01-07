@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import os, pprint
+import logging, os, pprint
 from illiad.account import IlliadSession
 
 
@@ -9,6 +9,17 @@ from illiad.account import IlliadSession
 REMOTE_AUTH_URL = os.environ['ILLIAD_SAMPLE_SCRIPT__REMOTE_AUTH_URL']
 AUTH_KEY = os.environ['ILLIAD_SAMPLE_SCRIPT__REMOTE_AUTH_KEY']
 USERNAME = os.environ['ILLIAD_SAMPLE_SCRIPT__TEST_USERNAME']
+
+
+## logging
+logging.basicConfig(
+    filename='',
+    level=logging.DEBUG,
+    format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
+    datefmt='%d/%b/%Y %H:%M:%S' )
+logger = logging.getLogger(__name__)
+logger.debug( 'sample_script log started' )
+
 
 ## openurl
 """

@@ -7,7 +7,7 @@ ILLiad account handling.
 
 import logging, pprint, re
 import requests
-import parsers
+from . import parsers
 
 #By default SSL verification will be set to false.
 #This is likely to be run against a local service where
@@ -32,19 +32,44 @@ class IlliadSession():
         """
         Logs the user in to Illiad and sets the session id.
         """
-        out = {'authenticated': False,
-               'session_id': None,
-               'new_user': False}
-        resp = requests.get(self.url,
-                         headers=self.header,
-                         verify=SSL_VERIFICATION)
+        out = { 'authenticated': False, 'session_id': None, 'new_user': False }
+        resp = requests.get( self.url, headers=self.header, verify=SSL_VERIFICATION )
+        if self._check_blocked( resp.text ) == True:
+            return out
         parsed_login = parsers.main_menu(resp.content)
         out.update(parsed_login)
         self.session_id = parsed_login['session_id']
         self.registered = parsed_login['registered']
-        logging.info("ILLiad session %s established for %s.  Registered: %s" %\
-                        (self.session_id, self.username, self.registered))
+        logging.info( "ILLiad session %s established for %s.  Registered: %s" % (self.session_id, self.username, self.registered) )
         return out
+
+    def _check_blocked( self, resp_text ):
+        """ Checks if login attempt indicates user is blocked.
+            TODO: refactor parsers._check_blocked()
+            Called by login() """
+        logging.debug( 'resp.text, ```%s```' % resp_text )
+        if 'you have been blocked' in resp_text.lower():
+            return True
+        else:
+            return False
+
+    # def login(self):
+    #     """
+    #     Logs the user in to Illiad and sets the session id.
+    #     """
+    #     out = {'authenticated': False,
+    #            'session_id': None,
+    #            'new_user': False}
+    #     resp = requests.get(self.url,
+    #                      headers=self.header,
+    #                      verify=SSL_VERIFICATION)
+    #     parsed_login = parsers.main_menu(resp.content)
+    #     out.update(parsed_login)
+    #     self.session_id = parsed_login['session_id']
+    #     self.registered = parsed_login['registered']
+    #     logging.info("ILLiad session %s established for %s.  Registered: %s" %\
+    #                     (self.session_id, self.username, self.registered))
+    #     return out
 
     def logout(self):
         """
@@ -177,7 +202,3 @@ class IlliadSession():
         self.registered = True
         out['status'] = 'Registered'
         return out
-
-
-
-

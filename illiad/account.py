@@ -33,6 +33,7 @@ class IlliadSession():
         out = { 'authenticated': False, 'session_id': None, 'new_user': False }
         resp = requests.get( self.url, headers=self.header, verify=SSL_VERIFICATION )
         if self._check_blocked( resp.text ) == True:
+            out['blocked'] = True
             return out
         parsed_login = parsers.main_menu(resp.content)
         out.update(parsed_login)
@@ -47,6 +48,8 @@ class IlliadSession():
             Called by login() """
         logging.debug( 'resp.text, ```%s```' % resp_text )
         if 'you have been blocked' in resp_text.lower():
+            self.blocked_patron = True
+            self.registered = True
             return True
         else:
             return False

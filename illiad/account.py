@@ -31,7 +31,7 @@ class IlliadSession():
     def login(self):
         """ Logs the user in to Illiad and sets the session id. """
         out = { 'authenticated': False, 'session_id': None, 'new_user': False }
-        resp = requests.get( self.url, headers=self.header, verify=SSL_VERIFICATION )
+        resp = requests.get( self.url, headers=self.header, verify=SSL_VERIFICATION, timeout=15 )
         if self._check_blocked( resp.text ) == True:
             out['blocked'] = True
             return out
@@ -81,7 +81,7 @@ class IlliadSession():
         """
         out = {}
         resp = requests.get("%s?SessionID=%s&Action=99" % (self.url, self.session_id),
-                            verify=SSL_VERIFICATION)
+                            verify=SSL_VERIFICATION, timeout=15)
         logging.info("ILLiad session %s ended for %s." % (self.session_id, self.username))
         out['authenticated'] = False
         return out
@@ -94,7 +94,7 @@ class IlliadSession():
         submit_key = { 'errors': None, 'blocked': False }
         ill_url = "%s/OpenURL?%s" % ( self.url, open_url )
         logging.info("ILLiad request form URL %s." % ill_url)
-        resp = requests.get( ill_url, headers=self.header, cookies=self.cookies, verify=SSL_VERIFICATION )
+        resp = requests.get( ill_url, headers=self.header, cookies=self.cookies, verify=SSL_VERIFICATION, timeout=15 )
         submit_key = self._check_400( resp, submit_key )
         rkey = parsers.request_form(resp.content)
         submit_key.update(rkey)
@@ -149,7 +149,8 @@ class IlliadSession():
                           data=submit_key,
                           headers=self.header,
                           cookies=self.cookies,
-                          verify=SSL_VERIFICATION)
+                          verify=SSL_VERIFICATION,
+                          timeout=15)
         submit_resp = parsers.request_submission(resp.content)
         out.update(submit_resp)
         return out
@@ -196,7 +197,8 @@ class IlliadSession():
                           data=reg_key,
                           headers=self.header,
                           cookies=self.cookies,
-                          verify=SSL_VERIFICATION)
+                          verify=SSL_VERIFICATION,
+                          timeout=15)
         out = {}
         #out['meta'] = r.content
         out['status_code'] = resp.status_code
